@@ -28,7 +28,7 @@ async function sendVerificationEmail(email,otp){
     }
 }
 //now using the pre middleware
-OTPSchema.pre("save",async function(next){
+OTPSchema.pre("save",async function(next){  //here we use pre middleware bcs we want to verify its profile before saving the data in DB
     await sendVerificationEmail(this.email,this.otp);
     next();
 })
