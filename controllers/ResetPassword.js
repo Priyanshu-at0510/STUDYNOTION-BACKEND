@@ -28,7 +28,7 @@ exports.resetPassword =async (req,res)=>{
     const url=`http://localhoat:3000/update-password/${token}`
     //send mail containing the url
     await mailSender(email,
-                    "Password Rsest Link",
+                    "Password Reset Link",
                     `password Reset Link : ${url}`);
     //return response
     return res.status(200).json({
