@@ -27,6 +27,7 @@ exports.createCourse= async (req,res) => {
                 message:"Instructor Details not found",
             })
         }
+        //TODO:verify that userId and instructorDetail._id are same or different
 
         //check given tag is valid or not
         const tagDetails = await Tag.findById(tag);
@@ -74,7 +75,7 @@ exports.createCourse= async (req,res) => {
 
         return res.status(200).json({
             success:true,
-            message:"New course created successfully",
+            message:"New course created successfully,",
             data:newCourse,
         });
 
