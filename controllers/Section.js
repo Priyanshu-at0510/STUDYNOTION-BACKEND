@@ -85,8 +85,24 @@ exports.deleteSection=async (req,res)=>{
                 message:"All field required",
             })
         }
+        const section=await Section.findById(sectionId);
+        if(!section){
+            return res.status(404).json({
+                success:false,
+                message:"Section not found",
+            })
+        }
+        //remove the sectionId from course.courseContent
+        await Course.findByIdAndUpdate(
+            section.sectionId,
+            {
+                $pull:{
+                    courseContent:sectionId,
+                }
+            }
+        );
         //delete the section
-        await Section.findByIdAndDelete(sectionId,{new:true});
+        await Section.findByIdAndDelete(sectionId);
         //return response
         return res.status(200).json({
             success:true,
