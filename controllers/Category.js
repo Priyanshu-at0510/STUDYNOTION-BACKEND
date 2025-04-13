@@ -1,7 +1,7 @@
-const Tag=require("../models/Tags");
+const Category=require("../models/Category");
 
 //create tag handler function
-exports.createTag=async (req,res)=>{
+exports.createCategory=async (req,res)=>{
     try {
         //fetch the data from req ki body
         const {name,description}=req.body;
@@ -13,11 +13,11 @@ exports.createTag=async (req,res)=>{
             });
         }
         //entry created at database  
-        const tagDetails=await Tag.create({
+        const categoryDetails=await Category.create({
             name:name,
             description:description,
         });
-        console.log(tagDetails);
+        console.log(categoryDetails);
         return res.status(200).json({
             success:true,
             message:"Entry of tag is created successfully at DB"
@@ -32,9 +32,9 @@ exports.createTag=async (req,res)=>{
 };
 
 //get allTags handler function
-exports.showAllTags=async (req,res)=>{
+exports.showAllCategory=async (req,res)=>{
     try {
-        const allTags=await Tag.find({},{name:true,description:true});
+        const allTags=await Category.find({},{name:true,description:true});
         res.status(200).json({
             success:true,
             message:"All tags return successfully"
