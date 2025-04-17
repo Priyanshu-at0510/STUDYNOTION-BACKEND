@@ -83,3 +83,75 @@ exports.capturePayment=async (req,res)=>{
     }
     
 };
+
+//verify signature of razorpay and server
+exports.verifySignature=async (req,res)=>{
+     
+    const webHookSecret= "12345678";
+    const signature=req.header["x-razorpay-signature"];
+
+
+    const shasum=crypto.createHmac("sha256",webHookSecret);
+    shasum.update(JSON.stringify(req.body));
+    const digest=shasum.digest("hex");
+
+
+    if(signature === digest){
+        //payment is authorized
+        const {courseId,userId}=req.body.payload.payment.entity.notes;
+        try {
+            //fullfill the action
+
+            //find the course the enroll the student on it
+            const  enrolledCourse=await Course.findOneAndUpdate(
+                                             {_id:courseId},
+                                             {$push:{studentsEnrolled:userId}},
+                                             {new:true},
+            );
+            if(!enrolledCourse){
+                return res.status(500).json({
+                  success:false,
+                  message:"Course not Found",
+                });
+            }
+
+            console.log(enrolledCourse);
+
+            //find the student and add course  to their list of enrolled courses me
+            const enrolledStudent=await User.findOneAndUpdate(
+                                             {_id:userId},
+                                             {$push:{courses:courseId}},
+                                             {new:true},
+            );
+            console.log(enrolledStudent);
+
+            //mail send karna confirmation wala
+            const emailResponse=await mailSender(
+                        enrolledStudent.email,
+                        "Congratulations from TradingWala ",
+                        "Congratulations ,you are onboarded into new TradingWala Course",
+
+            );
+            console.log(emailResponse);
+            return res.status(200).json({
+                success:true,
+                message:"Signature Verified and Course Added",
+            });
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success:false,
+                message:error.message,
+            })
+        }
+    }
+    else{
+        return res.status(400).json({
+            success:false,
+            message:error.message,
+        });
+    }
+
+
+};
