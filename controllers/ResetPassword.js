@@ -3,7 +3,7 @@ const mailSender=require("../utils/mailSender");
 const bcrypt=require("bcrypt");
 
 //resertPassword token
-exports.resetPassword =async (req,res)=>{
+exports.resetPasswordToken =async (req,res)=>{
    try {
     //fetch the email from req ki body
     const {email}=req.body;
