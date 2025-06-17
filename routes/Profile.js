@@ -8,7 +8,8 @@ const {
   updateDisplayPicture,
   getEnrolledCourses,
   instructorDashboard,
-} = require("../controllers/Profile")
+} = require("../controllers/Profile");
+const { resetPasswordToken, resetPassword } = require("../controllers/ResetPassword");
 
 // ********************************************************************************************************
 //                                      Profile routes

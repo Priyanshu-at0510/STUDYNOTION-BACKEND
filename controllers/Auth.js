@@ -96,7 +96,7 @@ exports.signup = async (req, res) => {
       accountType: accountType,
       approved: approved,
       additionalDetails: profileDetails._id,
-      image: "",
+      image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=random`,
     })
 
     return res.status(200).json({
@@ -143,7 +143,10 @@ exports.login = async (req, res) => {
     // Generate JWT token and Compare Password
     if (await bcrypt.compare(password, user.password)) {
       const token = jwt.sign(
-        { email: user.email, id: user._id, role: user.role },
+        { email: user.email,
+          id: user._id,
+          accountType: user.accountType
+        },
         process.env.JWT_SECRET,
         {
           expiresIn: "24h",
@@ -203,6 +206,7 @@ exports.sendOtp = async (req, res) => {
       lowerCaseAlphabets: false,
       specialChars: false,
     })
+    await mailSender(email, "Verification OTP", `Your OTP is ${otp}`);
     const result = await OTP.findOne({ otp: otp })
     console.log("Result is Generate OTP Func")
     console.log("OTP", otp)

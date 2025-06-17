@@ -5,6 +5,7 @@ function getRandomInt(max) {
   }
 
 exports.createCategory = async (req, res) => {
+  
 	try {
 		const { name, description } = req.body;
 		if (!name) {
