@@ -1,5 +1,5 @@
 const mongoose=require("mongoose");
-
+const SubSection = require("../models/SubSection");
 require("dotenv").config();
 
 const sectionSchema=new mongoose.Schema({

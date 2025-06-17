@@ -5,7 +5,7 @@ const SubSection = require("../models/SubSection")
 const User = require("../models/User")
 const { uploadImageToCloudinary } = require("../utils/imageUploader")
 const CourseProgress = require("../models/CourseProgress")
-const { convertSecondsToDuration } = require("../utils/secToDuration")
+const  secToDuration  = require("../utils/secToDuration")
 // Function to create a new course
 exports.createCourse = async (req, res) => {
   try {
@@ -24,14 +24,28 @@ exports.createCourse = async (req, res) => {
       instructions: _instructions,
     } = req.body
     // Get thumbnail image from request files
+    if (!req.files || !req.files.thumbnailImage) {
+      return res.status(400).json({
+        success: false,
+        message: "Thumbnail image is required",
+      })
+    }
     const thumbnail = req.files.thumbnailImage
 
     // Convert the tag and instructions from stringified Array to Array
-    const tag = JSON.parse(_tag)
-    const instructions = JSON.parse(_instructions)
+    let tag = []
+    let instructions = []
 
-    console.log("tag", tag)
-    console.log("instructions", instructions)
+    try {
+      if (_tag && _tag !== "undefined") tag = JSON.parse(_tag)
+      if (_instructions && _instructions !== "undefined") instructions = JSON.parse(_instructions)
+    } catch (err) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid JSON format for tag or instructions",
+        error: err.message,
+      })
+    }
 
     // Check if any of the required fields are missing
     if (
@@ -299,7 +313,7 @@ exports.getCourseDetails = async (req, res) => {
         path: "courseContent",
         populate: {
           path: "subSection",
-          select: "-videoUrl",
+          
         },
       })
       .exec()
@@ -326,7 +340,7 @@ exports.getCourseDetails = async (req, res) => {
       })
     })
 
-    const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+    const totalDuration = secToDuration(totalDurationInSeconds)
 
     return res.status(200).json({
       success: true,
