@@ -72,13 +72,6 @@ exports.deleteAccount = async (req, res) => {
     await Profile.findByIdAndDelete({
       _id: new mongoose.Types.ObjectId(user.additionalDetails),
     })
-    for (const courseId of user.courses) {
-      await Course.findByIdAndUpdate(
-        courseId,
-        { $pull: { studentsEnroled: id } },
-        { new: true }
-      )
-    }
     // Now Delete User
     await User.findByIdAndDelete({ _id: id })
     res.status(200).json({
